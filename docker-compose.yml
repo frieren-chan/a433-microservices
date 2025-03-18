@@ -1,0 +1,32 @@
+# The version of Docker Compose file format
+version: "3.9"
+
+# Defines the services that make up your app
+services:
+  # The first service is a MongoDB database
+  item-db:
+      # Uses the version 3 of the mongo image from Docker Hub
+      image: mongo:3
+      # Mounts the named volume app-db to the path /data/db inside the container
+      volumes:
+        - app-db:/data/db
+      # If the service stops, Docker will automatically try to restart it
+      restart: always
+
+  # The second service is a custom application
+  item-app:
+    # Uses a custom image from Docker Hub
+    image: ghcr.io/frieren-chan/item-app:v1
+    # Maps the port 8080 inside the container to the port 80 on the host machine
+    ports:
+      - "80:8080"
+    # Specifies that this service depends on the item-db service
+    depends_on:
+      - item-db
+    # If the service stops, Docker will automatically try to restart it
+    restart: always
+
+# Defines the named volumes used by the services
+volumes:
+  # The named volume used by the item-db service
+  app-db:
